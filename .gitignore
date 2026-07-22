@@ -1,0 +1,33 @@
+# Simulation
+*.vcd
+*.fst
+*.vvp
+*.log
+*.out
+*.gtkw
+sim/
+
+# Personal Development Journal
+dev_log.txt
+
+# Build artifacts
+build/
+
+# Yosys
+*_synth.v
+*.json
+*.dot
+
+# OpenSTA
+*.rpt
+.history_sta
+
+# Temporary files
+*.tmp
+*.svg.new
+
+# VS Code
+.vscode/
+
+# Linux temp files
+*~
