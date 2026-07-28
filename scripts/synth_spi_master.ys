@@ -1,0 +1,23 @@
+# Yosys synthesis script for SPI Master
+
+# Read RTL
+read_verilog -sv rtl/spi_master.sv
+
+# Set top module
+hierarchy -top spi_master
+
+# Generic synthesis
+proc
+opt
+fsm
+opt
+memory
+opt
+techmap
+opt
+
+# Statistics
+stat
+
+# Write synthesized netlist
+write_verilog reports/spi_master_synth.v

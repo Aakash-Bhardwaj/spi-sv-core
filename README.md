@@ -33,16 +33,16 @@ Each design decision is documented, verified, synthesized, and analyzed before i
 
 ## Version 1.0.0
 
-- [ ] Independent SPI Master module
+- [x] Independent SPI Master module
 - [ ] Independent SPI Slave module
 - [ ] Top-level Master–Slave integration
-- [ ] Parameterized data width
-- [ ] Parameterized SPI clock divider
+- [x] Parameterized data width
+- [x] Parameterized SPI clock divider
 - [ ] Full-duplex communication
-- [ ] Runtime-selectable CPOL
-- [ ] Runtime-selectable CPHA
-- [ ] Runtime-selectable MSB/LSB transmission
-- [ ] Active-low Chip Select (`CS_N`)
+- [x] Runtime-selectable CPOL
+- [x] Runtime-selectable CPHA
+- [x] Runtime-selectable MSB/LSB transmission
+- [x] Active-low Chip Select (`CS_N`)
 
 ## Future Roadmap
 
@@ -135,8 +135,8 @@ Final Documentation Review
 - [x] Repository initialized
 - [x] Project specification
 - [x] Architecture
-- [ ] SPI Master RTL
-- [ ] SPI Master Verification
+- [x] SPI Master RTL
+- [x] SPI Master Verification
 - [ ] SPI Master Synthesis
 - [ ] SPI Slave RTL
 - [ ] SPI Slave Verification
@@ -151,7 +151,7 @@ Final Documentation Review
 
 # Results
 
-Results will be updated as development progresses.
+*Results will be updated after completion.*
 
 ---
 
