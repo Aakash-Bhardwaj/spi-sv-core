@@ -42,7 +42,19 @@ Verified using a self-checking SystemVerilog testbench.
 
 Verified properties:
 
-*(To be completed.)*
+- Reset behaviour
+- All four SPI operating modes (CPOL/CPHA)
+- MSB-first transmission
+- LSB-first transmission
+- Full-duplex data transfer
+- Runtime configuration latching
+- Mid-transaction configuration stability
+- All-zeros data pattern
+- All-ones data pattern
+- Alternating data patterns
+- Back-to-back transactions
+- Randomized stress testing
+- Parameterized data width
 
 ---
 
@@ -70,19 +82,52 @@ Verified properties:
 
 The following test cases were implemented during verification.
 
-### SPI Master
+### 5.1 SPI Master
+
+Verified using a self-checking SystemVerilog testbench.
+
+Verified properties:
+
+- Reset behaviour
+- All SPI operating modes
+- MSB-first transfers
+- LSB-first transfers
+- Full-duplex communication
+- Runtime configuration latching
+- Mid-transaction configuration stability
+- All-zeros transmission
+- All-ones transmission
+- Alternating data patterns
+- Back-to-back transfers
+- Randomized stress testing
+- Parameterized operation
+
+### Test Summary
+
+| Test Case | Status |
+|-----------|:------:|
+| Reset | ✓ |
+| SPI Mode 0 | ✓ |
+| SPI Mode 1 | ✓ |
+| SPI Mode 2 | ✓ |
+| SPI Mode 3 | ✓ |
+| MSB-First Transfer | ✓ |
+| LSB-First Transfer | ✓ |
+| All Zeros Pattern | ✓ |
+| All Ones Pattern | ✓ |
+| Alternating Patterns | ✓ |
+| Back-to-Back Transfers | ✓ |
+| Random Stress Testing | ✓ |
+
+---
+
+### 5.2 SPI Slave
 
 *(To be completed.)*
 
 ---
 
-### SPI Slave
-
-*(To be completed.)*
-
----
-
-### SPI Top-Level
+### 5.3 SPI Top-Level
 
 *(To be completed.)*
 
@@ -90,20 +135,25 @@ The following test cases were implemented during verification.
 
 ## 6. Assertions
 
-Immediate SystemVerilog assertions will be implemented to verify key SPI design invariants during simulation.
+### 6.1 SPI Master
 
-Planned assertions include:
+Immediate SystemVerilog assertions were implemented to verify key SPI Master design invariants during simulation.
 
-- Parameter validation
-- FSM state validity
-- Counter bounds
-- Chip-select behaviour
-- Clock generation correctness
-- Busy/done signal consistency
-- Detection of unknown (`X/Z`) values
-- Protocol-specific design invariants
+Verified properties:
 
-Assertion results will be documented after verification.
+- Chip-select (`cs_n`) and busy (`busy`) remain complementary throughout a transaction.
+- `busy` and `done` are never asserted simultaneously.
+- Output signals (`mosi`, `sclk`, `cs_n`, `rx_data`, `busy`, and `done`) never contain unknown (`X/Z`) values after reset.
+
+All assertions passed during simulation.
+
+### 6.2 SPI Slave
+
+*To be completed.*
+
+### 6.3 SPI Top-Level
+
+*To be completed.*
 
 ---
 
