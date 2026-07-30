@@ -1,0 +1,23 @@
+# Yosys synthesis script for SPI Slave
+
+# Read RTL
+read_verilog -sv rtl/spi_slave.sv
+
+# Set top module
+hierarchy -top spi_slave
+
+# Generic synthesis
+proc
+opt
+fsm
+opt
+memory
+opt
+techmap
+opt
+
+# Statistics
+stat
+
+# Write synthesized netlist
+write_verilog reports/spi_slave_synth.v

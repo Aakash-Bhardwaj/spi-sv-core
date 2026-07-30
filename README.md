@@ -34,7 +34,7 @@ Each design decision is documented, verified, synthesized, and analyzed before i
 ## Version 1.0.0
 
 - [x] Independent SPI Master module
-- [ ] Independent SPI Slave module
+- [x] Independent SPI Slave module
 - [ ] Top-level Master–Slave integration
 - [x] Parameterized data width
 - [x] Parameterized SPI clock divider
@@ -137,9 +137,9 @@ Final Documentation Review
 - [x] Architecture
 - [x] SPI Master RTL
 - [x] SPI Master Verification
-- [ ] SPI Master Synthesis
-- [ ] SPI Slave RTL
-- [ ] SPI Slave Verification
+- [x] SPI Master Synthesis
+- [x] SPI Slave RTL
+- [x] SPI Slave Verification
 - [ ] SPI Slave Synthesis
 - [ ] Top-level integration
 - [ ] Verification
