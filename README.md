@@ -140,7 +140,7 @@ Final Documentation Review
 - [x] SPI Master Synthesis
 - [x] SPI Slave RTL
 - [x] SPI Slave Verification
-- [ ] SPI Slave Synthesis
+- [x] SPI Slave Synthesis
 - [ ] Top-level integration
 - [ ] Verification
 - [ ] Generic synthesis

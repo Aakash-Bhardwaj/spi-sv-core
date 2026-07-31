@@ -136,8 +136,6 @@ The SPI Master datapath consists of:
 - Bit counter
 - Registered outputs
 
-![DATAPATH](./images/SPI_MASTER_DATAPATH.png)
-
 The SPI Master uses a four-state finite-state machine.
 
 | State | Function |
@@ -232,89 +230,198 @@ The SPI Master uses a four-state finite-state machine.
 
 ## 4.1 Module Overview
 
-*To be completed.*
+The `spi_slave` module implements a synthesizable, parameterized SPI Slave supporting full-duplex serial communication.
 
----
+The design supports all four standard SPI operating modes through runtime-configurable clock polarity (`CPOL`) and clock phase (`CPHA`), runtime-selectable MSB-first and LSB-first transmission, and parameterized transfer widths.
+
+The implementation follows a synchronous single-clock architecture. External SPI interface signals (`SCLK`, `CS_N`, and `MOSI`) are synchronized into the system clock domain using dedicated two-stage synchronizers before protocol processing. Runtime configuration inputs are latched at the start of each transaction and remain unchanged until the transfer completes.
+
+The module is fully synthesizable and vendor-independent, making it suitable for both FPGA and ASIC implementation flows.
 
 ## 4.2 Interface
 
 ### Parameters
 
-*To be completed.*
+| Parameter | Description |
+|-----------|-------------|
+| `DATA_WIDTH` | Number of bits transferred during each SPI transaction. |
 
 ### Inputs
 
-*To be completed.*
+| Signal | Width | Description |
+|--------|------:|-------------|
+| `clk` | 1 | System clock |
+| `rst_n` | 1 | Active-low synchronous reset |
+| `tx_data` | `DATA_WIDTH` | Parallel transmit data |
+| `mosi` | 1 | Master Out Slave In |
+| `sclk` | 1 | SPI serial clock |
+| `cs_n` | 1 | Active-low chip-select |
+| `cpol` | 1 | Runtime clock polarity selection |
+| `cpha` | 1 | Runtime clock phase selection |
+| `bit_order` | 1 | Runtime bit-order selection |
 
 ### Outputs
 
-*To be completed.*
-
----
+| Signal | Width | Description |
+|--------|------:|-------------|
+| `miso` | 1 | Master In Slave Out |
+| `rx_data` | `DATA_WIDTH` | Received parallel data |
+| `busy` | 1 | Indicates an active transaction |
+| `done` | 1 | One-cycle transfer-complete pulse |
 
 ## 4.3 Derived Parameters
 
-*To be completed.*
+The SPI Slave derives internal parameters from the user-specified configuration to simplify counter sizing while maintaining parameterized scalability.
 
----
+| Parameter | Purpose |
+|-----------|---------|
+| `BIT_CNT_WIDTH` | Width of the transfer bit counter, derived from `DATA_WIDTH`. |
+
+The implementation validates the following parameter constraint during simulation:
+
+- `DATA_WIDTH > 0`
+
+Parameter validation is excluded from synthesis using `translate_off` directives while remaining active during simulation.
 
 ## 4.4 Internal Registers
 
-*To be completed.*
+The SPI Slave maintains internal registers for runtime configuration, input synchronization, datapath operation, transaction control, and registered outputs.
 
----
+| Register | Purpose |
+|----------|---------|
+| `cpol_reg` | Latched clock polarity for the current transaction. |
+| `cpha_reg` | Latched clock phase for the current transaction. |
+| `bit_order_reg` | Latched bit-order selection. |
+| `tx_shift_reg` | Holds transmit data during serial shifting. |
+| `rx_shift_reg` | Accumulates received serial data during a transaction. |
+| `rx_data_reg` | Stores the completed received data after the transaction finishes. |
+| `bit_count` | Tracks the number of transferred bits. |
+| `sclk_sync_ff1`, `sclk_sync_ff2` | Two-stage synchronizer for the SPI clock. |
+| `cs_sync_ff1`, `cs_sync_ff2` | Two-stage synchronizer for the chip-select signal. |
+| `mosi_sync_ff1`, `mosi_sync_ff2` | Two-stage synchronizer for the MOSI signal. |
+| `sclk_sync` | Synchronized SPI clock. |
+| `cs_sync` | Synchronized chip-select signal. |
+| `mosi_sync` | Synchronized MOSI signal. |
+| `sclk_prev` | Previous synchronized SPI clock used for edge detection. |
+| `miso_reg` | Registered MISO output. |
+| `busy_reg` | Registered busy status. |
+| `done_reg` | Registered transfer-complete indication. |
 
 ## 4.5 Combinational Signals
 
-*To be completed.*
+The SPI Slave derives several combinational signals to simplify protocol implementation and reduce duplicated logic.
 
----
+| Signal | Purpose |
+|---------|---------|
+| `sclk_rise` | Indicates a rising edge of the synchronized SPI clock. |
+| `sclk_fall` | Indicates a falling edge of the synchronized SPI clock. |
+| `sample_edge` | Indicates the SPI clock edge used for data sampling. |
+| `shift_edge` | Indicates the SPI clock edge used for data shifting. |
+| `transfer_finish` | Indicates that the final bit of the current transaction is being transferred. |
+| `final_edge` | Indicates the final protocol event required to complete the transaction based on the selected SPI mode. |
+
+The `sample_edge` and `shift_edge` signals are derived from the latched `CPOL` and `CPHA` configuration, allowing a single implementation to support all four SPI operating modes without duplicating datapath logic.
 
 ## 4.6 Datapath & State Machine
 
-*To be completed.*
+The SPI Slave datapath consists of:
 
----
+- Two-stage input synchronizers
+- Edge detection logic
+- Transaction FSM
+- Transmit shift register
+- Receive shift register
+- Bit counter
+- Registered outputs
+
+The SPI Slave uses a four-state finite-state machine.
+
+| State | Function |
+|--------|----------|
+| `IDLE` | Waits for chip-select assertion |
+| `START` | Initializes the transaction and latches the runtime configuration |
+| `TRANSFER` | Performs full-duplex serial communication |
+| `STOP` | Completes the transaction and returns to `IDLE` |
+
+![FSM](./images/SPI_SLAVE_FSM.png)
 
 ## 4.7 Algorithm
 
-*To be completed.*
-
----
+1. Validate configuration parameters.
+2. Synchronize the external SPI interface signals.
+3. Wait for chip-select assertion.
+4. Latch the runtime configuration and transmit data.
+5. Initialize internal registers and counters.
+6. Preload the first transmit bit when `CPHA = 0`.
+7. Detect synchronized SPI clock edges.
+8. Shift transmit data and sample receive data according to the selected SPI mode.
+9. Repeat until all bits have been transferred.
+10. Store the received data.
+11. Generate the transfer-complete indication and return to the idle state.
 
 ## 4.8 Design Decisions
 
-*To be completed.*
-
----
+- Runtime configuration latched per transaction.
+- Single clock domain.
+- Two-stage synchronization of asynchronous SPI inputs.
+- Edge-based SPI protocol abstraction.
+- Independent transmit and receive shift registers.
+- Registered interface outputs.
+- Runtime-selectable bit ordering.
+- Compile-time parameter validation.
 
 ## 4.9 Corner Cases
 
-*To be completed.*
-
----
+| Condition | Behaviour |
+|-----------|-----------|
+| Invalid parameters | Simulation-time parameter validation failure |
+| Configuration change during transfer | Current transaction unaffected |
+| `CPHA = 0` | First transmit bit preloaded |
+| Early `cs_n` deassertion | Transaction terminates and returns to `IDLE` |
+| Reset | Controller returns to `IDLE` and clears internal registers |
 
 ## 4.10 Resource Utilization
 
 ### Synthesis Results
 
-*To be completed.*
+- Tool: Yosys
+- Script: `scripts/synth_spi_slave.ys`
+
+| Metric | Value |
+|--------|------:|
+| Number of Ports | 13 |
+| Number of Port Bits | 27 |
+| Number of Wires | 147 |
+| Number of Wire Bits | 373 |
+| Public Wires | 51 |
+| Public Wire Bits | 113 |
+| Memory Blocks | 0 |
+| Total Cells | 296 |
 
 ### Cell Breakdown
 
-*To be completed.*
+| Cell Type | Count |
+|-----------|------:|
+| `$_AND_` | 52 |
+| `$_MUX_` | 128 |
+| `$_NOT_` | 22 |
+| `$_OR_` | 47 |
+| `$_SDFFE_PN0N_` | 11 |
+| `$_SDFFE_PN0P_` | 24 |
+| `$_SDFF_PN0_` | 7 |
+| `$_SDFF_PN1_` | 3 |
+| `$_XOR_` | 2 |
 
 ### Waveform
 
-*To be completed.*
+![Waveform](./images/spi_slave_waveform.png)
 
 ### Verification Status
 
-- [ ] RTL Simulation
-- [ ] Self-checking Testbench
-- [ ] Assertions
-- [ ] Generic Synthesis
-- [ ] Sky130 Technology Mapping
+- [x] RTL Simulation
+- [x] Self-checking Testbench
+- [x] Assertions
+- [x] Synthesis
 - [ ] Static Timing Analysis
 
 ---
@@ -339,37 +446,25 @@ The SPI Master uses a four-state finite-state machine.
 
 *To be completed.*
 
----
-
 ## 5.3 Internal Signals
 
 *To be completed.*
-
----
 
 ## 5.4 Datapath & Hierarchy
 
 *To be completed.*
 
----
-
 ## 5.5 Algorithm
 
 *To be completed.*
-
----
 
 ## 5.6 Design Decisions
 
 *To be completed.*
 
----
-
 ## 5.7 Corner Cases
 
 *To be completed.*
-
----
 
 ## 5.8 Resource Utilization
 

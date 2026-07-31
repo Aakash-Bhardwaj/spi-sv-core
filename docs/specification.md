@@ -63,7 +63,7 @@ The SPI Master shall:
 * Perform simultaneous transmission and reception (full-duplex).
 * Accept a new transfer request only while idle.
 * Generate a status indication when a transfer is in progress.
-* Generate a transfer-complete indication after the final bit has been transferred.
+* Generate a one-cycle transfer-complete indication after the final bit has been transferred.
 
 ### SPI Slave
 
@@ -77,7 +77,8 @@ The SPI Slave shall:
 * Support parameterized transfer width.
 * Perform simultaneous transmission and reception (full-duplex).
 * Ignore bus activity while `cs_n` is deasserted.
-* Generate a transfer-complete indication after the final bit has been transferred.
+* Generate a one-cycle transfer-complete indication after the final bit has been transferred.
+* Synchronize asynchronous SPI inputs (`SCLK`, `cs_n`, and `MOSI`) into the system clock domain before protocol processing.
 
 ---
 
@@ -143,6 +144,7 @@ The SPI Slave shall:
 | `miso` | 1 | Master In Slave Out |
 | `rx_data` | `DATA_WIDTH` | Received parallel data |
 | `done` | 1 | Transfer complete |
+| `busy` | 1 | Indicates an active SPI transaction |
 
 ---
 

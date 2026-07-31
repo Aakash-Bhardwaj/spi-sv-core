@@ -64,7 +64,21 @@ Verified using a self-checking SystemVerilog testbench.
 
 Verified properties:
 
-*(To be completed.)*
+- Reset behaviour
+- All four SPI operating modes (CPOL/CPHA)
+- MSB-first transmission
+- LSB-first transmission
+- Full-duplex data transfer
+- Runtime configuration latching
+- Configuration changes during an active transaction
+- All-zeros data pattern
+- All-ones data pattern
+- Alternating data patterns
+- Back-to-back transactions
+- Early Chip Select deassertion
+- Chip Select glitch handling
+- Randomized stress testing
+- Parameterized data width
 
 ---
 
@@ -123,7 +137,44 @@ Verified properties:
 
 ### 5.2 SPI Slave
 
-*(To be completed.)*
+Verified using a self-checking SystemVerilog testbench.
+
+Verified properties:
+
+- Reset behaviour
+- All SPI operating modes
+- MSB-first transfers
+- LSB-first transfers
+- Full-duplex communication
+- Runtime configuration latching
+- Configuration changes during an active transaction
+- All-zeros transmission
+- All-ones transmission
+- Alternating data patterns
+- Back-to-back transfers
+- Early Chip Select deassertion
+- Chip Select glitch handling
+- Randomized stress testing
+- Parameterized operation
+
+### Test Summary
+
+| Test Case | Status |
+|-----------|:------:|
+| Reset | ✓ |
+| SPI Mode 0 | ✓ |
+| SPI Mode 1 | ✓ |
+| SPI Mode 2 | ✓ |
+| SPI Mode 3 | ✓ |
+| MSB-First Transfer | ✓ |
+| LSB-First Transfer | ✓ |
+| All Zeros Pattern | ✓ |
+| All Ones Pattern | ✓ |
+| Alternating Patterns | ✓ |
+| Back-to-Back Transfers | ✓ |
+| Early Chip Select Deassertion | ✓ |
+| Chip Select Glitch | ✓ |
+| Random Stress Testing | ✓ |
 
 ---
 
@@ -149,7 +200,15 @@ All assertions passed during simulation.
 
 ### 6.2 SPI Slave
 
-*To be completed.*
+Immediate SystemVerilog assertions were implemented to verify key SPI Slave design invariants during simulation.
+
+Verified properties:
+
+- `busy` and `done` are never asserted simultaneously.
+- Output signals (`miso`, `rx_data`, `busy`, and `done`) never contain unknown (`X/Z`) values after reset.
+- `done` is asserted for exactly one clock cycle.
+
+All assertions passed during simulation.
 
 ### 6.3 SPI Top-Level
 

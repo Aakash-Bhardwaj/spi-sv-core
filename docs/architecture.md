@@ -107,88 +107,102 @@ Incoming serial data is received by the SPI Master and reconstructed into parall
 
 ### Architectural Decisions
 
-The SPI Master follows a synchronous single-clock architecture. All sequential logic operates exclusively on the system clock (`clk`).
+The SPI Master follows a synchronous single-clock architecture.
 
-The SPI serial clock (`SCLK`) is generated internally from the system clock using a parameterized clock divider. Rather than creating a separate clock domain, the divider generates one-cycle edge indicators (`sclk_rise` and `sclk_fall`) that synchronize all SPI protocol operations.
+Key design decisions:
 
-Configuration inputs (`CPOL`, `CPHA`, and `bit_order`) are sampled only when a new transaction begins and remain constant until the transaction completes. This ensures that protocol behaviour remains deterministic throughout an active SPI transaction, even if the external configuration inputs change.
-
-The transmit and receive datapaths use independent shift registers to support full-duplex communication while maintaining a modular and reusable architecture.
-
-The SPI Master uses a transaction-oriented finite-state machine consisting of the following states:
-
-- IDLE
-- START
-- TRANSFER
-- STOP
-
-The START state initializes a new SPI transaction by:
-
-- Latching the transmit data and runtime configuration
-- Initializing internal registers and counters
-- Asserting `CS_N`
-- Initializing `SCLK` to the configured idle level
-- Preloading the first transmit bit when `CPHA = 0`
-
-During the TRANSFER state, SPI communication is performed using generalized protocol events derived from the latched configuration:
-
-- `sample_edge`
-- `shift_edge`
-
-This abstraction enables a single datapath implementation to support all four SPI modes without duplicating protocol logic.
-
-All externally visible outputs (`MOSI`, `SCLK`, `CS_N`, `busy`, and `done`) are implemented as registered outputs to provide predictable timing behaviour and simplify synthesis, timing analysis, and verification.
+- Single clock domain
+- Runtime configuration latching
+- Parameterized clock divider
+- Edge-based SPI protocol abstraction
+- Independent transmit and receive shift registers
+- Registered outputs
+- Parameterized transfer width
+- Four-state transaction FSM
 
 ### Datapath Overview
 
-The SPI Master datapath consists of the following major functional blocks:
+The SPI Master datapath consists of:
 
-```text
-                    clk
-                     │
-              Clock Divider
-                     │
-      ┌──────────────┴──────────────┐
-      ▼                             ▼
-   sclk_reg                Edge Detection
-                                     │
-                      sample_edge / shift_edge
-                                     │
-                                     ▼
-                             Transaction FSM
-                                     │
-         ┌───────────────┬───────────────┐
-         ▼               ▼               ▼
-  TX Shift Register  RX Shift Register  Bit Counter
-         │               ▲
-         ▼               │
-      MOSI Register     MISO
-```
+- Clock divider
+- Edge generation logic
+- Transaction FSM
+- Transmit shift register
+- Receive shift register
+- Bit counter
+- Registered outputs
+
+![DATAPATH](./images/SPI_MASTER_DATAPATH.png)
 
 ### Internal Registers
-
-The SPI Master maintains the following primary internal registers:
 
 | Register | Purpose |
 |----------|---------|
 | `cpol_reg` | Latched clock polarity |
 | `cpha_reg` | Latched clock phase |
-| `bit_order_reg` | Latched bit transmission order |
+| `bit_order_reg` | Latched bit order |
 | `tx_shift_reg` | Transmit shift register |
 | `rx_shift_reg` | Receive shift register |
-| `clk_div_counter` | SPI clock divider counter |
-| `bit_count` | Tracks transmitted bits |
-| `sclk_reg` | Registered SPI clock output |
+| `clk_div_counter` | Clock divider counter |
+| `bit_count` | Bit counter |
 | `mosi_reg` | Registered MOSI output |
+| `sclk_reg` | Registered SPI clock output |
 | `cs_n_reg` | Registered chip-select output |
-| `busy_reg` | Registered busy status |
-| `done_reg` | Registered completion pulse |
+| `busy_reg` | Busy status |
+| `done_reg` | Transfer complete pulse |
 
 ---
 
 ## 6. SPI Slave
 
-*The SPI Slave architecture will be documented after implementation.*
+The SPI Slave follows a synchronous single-clock architecture.
+
+Key design decisions:
+
+- Single clock domain
+- Two-stage synchronization of asynchronous SPI inputs
+- Runtime configuration latching
+- Edge-based SPI protocol abstraction
+- Independent transmit and receive shift registers
+- Registered outputs
+- Parameterized transfer width
+- Four-state transaction FSM
+
+### Datapath Overview
+
+The SPI Slave datapath consists of:
+
+- Two-stage input synchronizers
+- SCLK edge detection
+- Transaction FSM
+- Transmit shift register
+- Receive shift register
+- Bit counter
+- Registered outputs
+
+![DATAPATH](./images/SPI_SLAVE_DATAPATH.png)
+
+### Internal Registers
+
+| Register                         | Purpose                       |
+| -------------------------------- | ------------------------------|
+| `cpol_reg` | Latched clock polarity |
+| `cpha_reg` | Latched clock phase |
+| `bit_order_reg` | Latched bit order |
+| `tx_shift_reg` | Transmit shift register |
+| `rx_shift_reg` | Receive shift register |
+| `rx_data_reg` | Received data register |
+| `bit_count` | Bit counter |
+| `sclk_sync_ff1`, `sclk_sync_ff2` | Two-stage SCLK synchronizer |
+| `cs_sync_ff1`, `cs_sync_ff2` | Two-stage CS synchronizer |
+| `mosi_sync_ff1`, `mosi_sync_ff2` | Two-stage MOSI synchronizer |
+| `sclk_sync` | Synchronized SCLK signal |
+| `cs_sync` | Synchronized CS_N signal |
+| `mosi_sync` | Synchronized MOSI signal |
+| `sclk_prev` | Previous synchronized SCLK for edge detection |
+| `miso_reg` | Registered MISO output |
+| `busy_reg` | Busy status |
+| `done_reg` | Transfer complete pulse |
 
 ---
 
