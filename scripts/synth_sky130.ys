@@ -1,0 +1,41 @@
+# Yosys Synthesis Script spi_top
+# Technology : Sky130 HDLL
+
+# Read Sky130 library
+read_liberty -lib \
+/usr/local/share/pdk/sky130A/libs.ref/sky130_fd_sc_hdll/lib/sky130_fd_sc_hdll__tt_025C_1v80.lib
+
+# Read RTL
+read_verilog -sv rtl/spi_master.sv
+read_verilog -sv rtl/spi_slave.sv
+read_verilog -sv rtl/spi_top.sv
+
+hierarchy -check -top spi_top
+
+# Synthesis
+proc
+opt
+fsm
+opt
+memory
+opt
+techmap
+opt
+
+# Technology mapping
+dfflibmap \
+-liberty /usr/local/share/pdk/sky130A/libs.ref/sky130_fd_sc_hdll/lib/sky130_fd_sc_hdll__tt_025C_1v80.lib
+
+abc \
+-liberty /usr/local/share/pdk/sky130A/libs.ref/sky130_fd_sc_hdll/lib/sky130_fd_sc_hdll__tt_025C_1v80.lib
+
+clean
+
+# Reports
+stat \
+-liberty /usr/local/share/pdk/sky130A/libs.ref/sky130_fd_sc_hdll/lib/sky130_fd_sc_hdll__tt_025C_1v80.lib
+
+check
+
+# Output
+write_verilog -noattr reports/spi_top_sky130_synth.v

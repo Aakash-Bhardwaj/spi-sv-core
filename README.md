@@ -144,7 +144,7 @@ Final Documentation Review
 - [x] Top-level integration
 - [x] Verification
 - [x] Generic synthesis
-- [ ] Technology-mapped synthesis
+- [x] Technology-mapped synthesis
 - [ ] Static timing analysis
 
 ---
