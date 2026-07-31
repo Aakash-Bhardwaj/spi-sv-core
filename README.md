@@ -35,10 +35,10 @@ Each design decision is documented, verified, synthesized, and analyzed before i
 
 - [x] Independent SPI Master module
 - [x] Independent SPI Slave module
-- [ ] Top-level Master–Slave integration
+- [x] Top-level Master–Slave integration
 - [x] Parameterized data width
 - [x] Parameterized SPI clock divider
-- [ ] Full-duplex communication
+- [x] Full-duplex communication
 - [x] Runtime-selectable CPOL
 - [x] Runtime-selectable CPHA
 - [x] Runtime-selectable MSB/LSB transmission
@@ -141,9 +141,9 @@ Final Documentation Review
 - [x] SPI Slave RTL
 - [x] SPI Slave Verification
 - [x] SPI Slave Synthesis
-- [ ] Top-level integration
-- [ ] Verification
-- [ ] Generic synthesis
+- [x] Top-level integration
+- [x] Verification
+- [x] Generic synthesis
 - [ ] Technology-mapped synthesis
 - [ ] Static timing analysis
 
