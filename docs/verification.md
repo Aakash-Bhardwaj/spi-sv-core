@@ -56,8 +56,6 @@ Verified properties:
 - Randomized stress testing
 - Parameterized data width
 
----
-
 ### 4.2 SPI Slave
 
 Verified using a self-checking SystemVerilog testbench.
@@ -80,15 +78,25 @@ Verified properties:
 - Randomized stress testing
 - Parameterized data width
 
----
-
 ### 4.3 SPI Top-Level
 
 Verifies end-to-end communication between the SPI Master and SPI Slave modules using a self-checking SystemVerilog integration testbench.
 
 Verified properties:
 
-*(To be completed.)*
+- Reset behaviour
+- End-to-end full-duplex communication
+- All four SPI operating modes (CPOL/CPHA)
+- MSB-first transmission
+- LSB-first transmission
+- Runtime configuration latching
+- All-zeros data pattern
+- All-ones data pattern
+- Alternating data patterns
+- Back-to-back transactions
+- Randomized stress testing
+- Parameterized data width
+- Parameterized clock divider
 
 ---
 
@@ -116,7 +124,7 @@ Verified properties:
 - Randomized stress testing
 - Parameterized operation
 
-### Test Summary
+#### Test Summary
 
 | Test Case | Status |
 |-----------|:------:|
@@ -132,8 +140,6 @@ Verified properties:
 | Alternating Patterns | ✓ |
 | Back-to-Back Transfers | ✓ |
 | Random Stress Testing | ✓ |
-
----
 
 ### 5.2 SPI Slave
 
@@ -157,7 +163,7 @@ Verified properties:
 - Randomized stress testing
 - Parameterized operation
 
-### Test Summary
+#### Test Summary
 
 | Test Case | Status |
 |-----------|:------:|
@@ -176,11 +182,41 @@ Verified properties:
 | Chip Select Glitch | ✓ |
 | Random Stress Testing | ✓ |
 
----
-
 ### 5.3 SPI Top-Level
 
-*(To be completed.)*
+Verified using a self-checking SystemVerilog integration testbench.
+
+Verified properties:
+
+- Reset behaviour
+- End-to-end full-duplex communication
+- All SPI operating modes
+- MSB-first transfers
+- LSB-first transfers
+- Runtime configuration latching
+- All-zeros transmission
+- All-ones transmission
+- Alternating data patterns
+- Back-to-back transfers
+- Randomized stress testing
+- Parameterized operation
+
+#### Test Summary
+
+| Test Case | Status |
+|-----------|:------:|
+| Reset | ✓ |
+| SPI Mode 0 | ✓ |
+| SPI Mode 1 | ✓ |
+| SPI Mode 2 | ✓ |
+| SPI Mode 3 | ✓ |
+| MSB-First Transfer | ✓ |
+| LSB-First Transfer | ✓ |
+| All Zeros Pattern | ✓ |
+| All Ones Pattern | ✓ |
+| Alternating Patterns | ✓ |
+| Back-to-Back Transfers | ✓ |
+| Random Stress Testing | ✓ |
 
 ---
 
@@ -212,7 +248,16 @@ All assertions passed during simulation.
 
 ### 6.3 SPI Top-Level
 
-*To be completed.*
+Immediate SystemVerilog assertions were implemented to verify key SPI Top-Level integration properties during simulation.
+
+Verified properties:
+
+- Master and slave `busy` signals are asserted simultaneously during active transfers.
+- Master and slave `done` signals complete together.
+- Receive data outputs (`master_rx_data` and `slave_rx_data`) never contain unknown (`X/Z`) values after reset.
+- Status outputs (`master_busy`, `master_done`, `slave_busy`, and `slave_done`) never contain unknown (`X/Z`) values after reset.
+
+All assertions passed during simulation.
 
 ---
 
@@ -228,6 +273,7 @@ The verification process aims to:
 - Verify reset behaviour
 - Verify boundary conditions
 - Verify full-duplex operation
+- Verify end-to-end master-slave integration
 
 ---
 
@@ -246,7 +292,16 @@ Verification is considered complete when:
 
 ## 9. Static Timing Analysis Results
 
-*To be completed after timing analysis.*
+Static timing analysis was performed on the technology-mapped design using OpenSTA and the Sky130 HDLL standard-cell library.
+
+Results:
+
+- Setup timing: PASS
+- Hold timing: PASS
+- Worst setup slack (WNS): Positive
+- Total Negative Slack (TNS): 0.00 ns
+
+No setup or hold timing violations were observed.
 
 ---
 

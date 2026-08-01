@@ -206,7 +206,7 @@ The implementation shall validate configuration parameters during elaboration wh
 The following constraints apply:
 
 * `DATA_WIDTH > 0`
-* `CLOCK_DIV > 0`
+* `CLOCK_DIV > 1`
 
 ---
 

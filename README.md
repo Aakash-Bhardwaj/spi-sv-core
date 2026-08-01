@@ -2,9 +2,9 @@
 
 ![SystemVerilog](https://img.shields.io/badge/SystemVerilog-RTL-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-In%20Development-orange)
+![Status](https://img.shields.io/badge/Status-Stable-success)
 
-A reusable, parameterized **SystemVerilog Serial Peripheral Interface (SPI) IP Core** consisting of independent SPI Master and SPI Slave modules with top-level integration for FPGA and ASIC implementations.
+A reusable, parameterized **SystemVerilog Serial Peripheral Interface (SPI) IP Core** consisting of independent SPI Master and SPI Slave modules together with a top-level integration wrapper for FPGA and ASIC implementations.
 
 This project follows a structured documentation-driven RTL engineering workflow, progressing from specification and architecture through implementation, verification, synthesis, and static timing analysis. The goal is to develop a reusable SPI IP core while emphasizing good engineering practices, documentation, and reproducibility.
 
@@ -49,6 +49,7 @@ Each design decision is documented, verified, synthesized, and analyzed before i
 - [ ] Multi-chip-select SPI Master
 - [ ] Multi-slave controller
 - [ ] Multi-master arbitration
+- [ ] Runtime-programmable clock divider
 - [ ] FIFOs
 - [ ] DMA support
 - [ ] Interrupt generation
@@ -151,7 +152,31 @@ Final Documentation Review
 
 # Results
 
-*Results will be updated after completion.*
+## Generic RTL Synthesis
+
+| Module | Cells |
+|---------|------:|
+| SPI Master | 313 |
+| SPI Slave | 296 |
+| SPI Top | 609 |
+
+## Technology-Mapped Synthesis (Sky130 HDLL)
+
+| Module | Area (µm²) |
+|---------|-----------:|
+| SPI Master | 2159.5712 |
+| SPI Slave | 2335.9904 |
+| SPI Top | 4495.5616 |
+
+## Static Timing Analysis
+
+| Metric | Value |
+|---------|------:|
+| Worst Setup Slack | 16.03 ns |
+| Worst Hold Slack | 0.32 ns |
+| WNS | 0.00 ns |
+| TNS | 0.00 ns |
+| Timing Closure | PASS |
 
 ---
 

@@ -219,7 +219,9 @@ The top-level module is responsible for:
 
 The top-level module contains no protocol-specific datapath or control logic.
 
-*Additional implementation details will be documented after the top-level module is completed.*
+The SPI Master generates the SPI interface signals (`MOSI`, `SCLK`, and `CS_N`), while the SPI Slave receives these synchronized signals and responds through the `MISO` line.
+
+The top-level module contains no additional protocol logic. It simply connects the two modules together, making it suitable for system-level verification, synthesis, and timing analysis.
 
 ---
 
@@ -238,4 +240,5 @@ Future versions of the SPI SV Core may include:
 - AXI4-Lite wrapper
 - Quad SPI (QSPI)
 - Execute-In-Place (XIP)
+- Asynchronous clock-domain support
 - Formal verification
