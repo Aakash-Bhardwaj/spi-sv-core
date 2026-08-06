@@ -14,7 +14,7 @@ help:
 sim:
 	mkdir -p sim
 	iverilog -g2012 -o sim/spi rtl/*.sv assertions/*.sv tb/tb_spi_top.sv
-	vvp spi
+	vvp sim/spi
 
 synth:
 	mkdir -p reports/synthesis
